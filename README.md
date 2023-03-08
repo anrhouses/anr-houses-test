@@ -5,4 +5,5 @@ You will find the R script for generating random clustered data adapted from "De
 The geotiff and shapefiles to run the R script can be downloaded [here](https://doi.org/10.5281/zenodo.6513429).
 
 See an example of random realisation for strongly clustered data ![](example_clusteredStrong.png).
-See an example of random realisation for moderately clustered data ![](example_clusteredMedium.png).
+
+See an example of random realisation for moderately clustered data ![](example_ClusteredMedium.png).
