@@ -1,0 +1,3 @@
+- ex1: spatio temp avec qrf (data de Meyer et al., 2018)
+- ex3: bioclim sur l'espagne avec qrf (data de Mila et al. 2022)
+- ex_a_faire: meuse avec qrf et krigeage (voir vignette de https://github.com/carlesmila/NNDM)
