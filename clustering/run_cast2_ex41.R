@@ -58,8 +58,7 @@ folds_bLOO_res <- bLOO(train_points, lrange_res, 0.5)
 #######################################################
 ## valid
 #######################################################
-set.seed(10)
-NCV = 5
+NCV = 10
 B = 250
 
 resu = list()
@@ -120,7 +119,7 @@ for (i in 1:NCV){
   }else{
     coordinates(trainDatB) = ~x+y
     coordinates(testDatB) = ~x+y
-    variogram = autofitVariogram(response ~ soil + ffreq + dist, trainDatB)
+    variogram = autofitVariogram(response ~ soil + ffreq + dist + x + y, trainDatB)
     #plot(variogram)
     rB = list()
     for (k in 1:ntest){
@@ -144,7 +143,7 @@ for (i in 1:NCV){
 ## Indicators
 #######################################################
 alpha = seq(0,1,by=0.1)
-Coverage = ES = VS = q2 = rmse = mae = NULL
+Coverage = ES = VS = q2 = rmse = mae = CRPS = NULL
 for (ii in 1:NCV){
 
   ## coverage
@@ -163,6 +162,7 @@ for (ii in 1:NCV){
     }
     ES[ii] = es_sample(y = true, dat = real)
     VS[ii] = vs_sample(y = true, dat = real)
+    CRPS[ii] = crps_sample(y = true, dat = real)
   
     ## Q2, rmse, mae
     q2[ii] = Q2(true, predB0[[ii]]$predictions)
@@ -183,6 +183,7 @@ for (ii in 1:NCV){
     }
     ES[ii] = es_sample(y = true, dat = real)
     VS[ii] = vs_sample(y = true, dat = real)
+    CRPS[ii] = crps_sample(y = true, dat = real)
     
     ## Q2, rmse, mae
     q2[ii] = Q2(true, predB0[[ii]])
@@ -191,20 +192,33 @@ for (ii in 1:NCV){
   }
 }
 
-resu[[paste(VV[vv],mod)]] = data.frame(ES=ES,VS,Coverage,q2,rmse,mae)
+resu[[paste(VV[vv],mod)]] = data.frame(ES=ES,VS,Coverage,q2,rmse,mae,CRPS)
 
 }## valid type
   
 } ## mod
 
 x11()
-par(mfrow=c(2,2),mar=c(4,4,2,2))
+par(mfrow=c(1,2),mar=c(4,4,2,2))
 df = data.frame(resu[[1]]$q2,resu[[2]]$q2,resu[[3]]$q2,resu[[4]]$q2)
 names(df) = names(resu)
 boxplot(df,main="q2")
+df = data.frame(resu[[1]]$mae,resu[[2]]$mae,resu[[3]]$mae,resu[[4]]$mae)
+names(df) = names(resu)
+boxplot(df,main="mae")
+
+
+x11()
+par(mfrow=c(1,2),mar=c(4,4,2,2))
 df = data.frame(resu[[1]]$Coverage,resu[[2]]$Coverage,resu[[3]]$Coverage,resu[[4]]$Coverage)
 names(df) = names(resu)
 boxplot(df,main="C")
+df = data.frame(resu[[1]]$CRPS,resu[[2]]$CRPS,resu[[3]]$CRPS,resu[[4]]$CRPS)
+names(df) = names(resu)
+boxplot(df,main="CRPS")
+
+x11()
+par(mfrow=c(1,2),mar=c(4,4,2,2))
 df = data.frame(resu[[1]]$ES,resu[[2]]$ES,resu[[3]]$ES,resu[[4]]$ES)
 names(df) = names(resu)
 boxplot(df,main="ES")
