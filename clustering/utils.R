@@ -42,6 +42,20 @@ CA.KM <- function(true,pred,alpha){
   return(cov)
 }
 
+CA.sampl <- function(true,real,alpha){
+  ntest = length(true)
+  nalpha = length(alpha)
+  cov = matrix(0,ntest,nalpha)
+  for (i in 1:ntest){
+    for (k in 1:nalpha){
+      pred0 = quantile(real[i,],abs(alpha[k]-1)/2)
+      pred1 = quantile(real[i,],(alpha[k]+1)/2)
+      cov[i,k] = Cov(true[i],pred0,pred1)
+    }
+  }
+  return(cov)
+}
+
 Q2 <- function(true,pred){
   1 - sum((true - pred)^2) / sum((true - mean(true))^2) 
 }
